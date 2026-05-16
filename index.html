@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="description" content="FrameWhisper - AI 分镜预览工具，用语音描述分镜，AI 生成预览视频，帮助拍摄团队提高效率">
+  <meta name="theme-color" content="#050505">
+  <title>FrameWhisper — 用声音，预见画面</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Noto+Sans+SC:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- ==================== 首页：模板选择 ==================== -->
+    <div class="screen screen-home active" id="screen-home">
+      <!-- 背景光效 -->
+      <div class="home-bg-glow"></div>
+
+      <header class="home-header">
+        <div class="logo-container">
+          <div class="logo-icon">
+            <svg width="36" height="36" viewBox="0 0 36 36" fill="none">
+              <rect x="2" y="6" width="32" height="24" rx="4" stroke="white" stroke-width="2"/>
+              <path d="M14 13L23 18L14 23V13Z" fill="white"/>
+              <circle cx="28" cy="8" r="4" fill="#A78BFA" stroke="#050505" stroke-width="2"/>
+            </svg>
+          </div>
+          <h1 class="logo-text">FrameWhisper</h1>
+        </div>
+        <p class="tagline">用声音，预见画面</p>
+        <p class="subtitle">选择一种视觉风格，开始描述你的分镜</p>
+      </header>
+
+      <div class="template-grid" id="template-grid">
+        <!-- 实拍 -->
+        <button class="template-card" data-skill="realistic" id="btn-skill-realistic">
+          <div class="template-card-glow" style="--skill-color: #4ECDC4"></div>
+          <div class="template-card-content">
+            <div class="template-icon-wrap" style="--skill-color: #4ECDC4">
+              <span class="template-icon">🎥</span>
+            </div>
+            <div class="template-info">
+              <h3 class="template-name">实拍</h3>
+              <p class="template-desc">真实场景 · 自然光 · 写实画面</p>
+            </div>
+            <div class="template-arrow">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+
+        <!-- 动漫 -->
+        <button class="template-card" data-skill="anime" id="btn-skill-anime">
+          <div class="template-card-glow" style="--skill-color: #FF6B9D"></div>
+          <div class="template-card-content">
+            <div class="template-icon-wrap" style="--skill-color: #FF6B9D">
+              <span class="template-icon">🎨</span>
+            </div>
+            <div class="template-info">
+              <h3 class="template-name">动漫</h3>
+              <p class="template-desc">动漫插画 · 鲜艳色彩 · 风格化</p>
+            </div>
+            <div class="template-arrow">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+
+        <!-- 特效 -->
+        <button class="template-card" data-skill="vfx" id="btn-skill-vfx">
+          <div class="template-card-glow" style="--skill-color: #A78BFA"></div>
+          <div class="template-card-content">
+            <div class="template-icon-wrap" style="--skill-color: #A78BFA">
+              <span class="template-icon">✨</span>
+            </div>
+            <div class="template-info">
+              <h3 class="template-name">特效</h3>
+              <p class="template-desc">电影特效 · 粒子效果 · CG 风格</p>
+            </div>
+            <div class="template-arrow">
+              <svg width="20" height="20" viewBox="0 0 20 20" fill="none">
+                <path d="M7 4L13 10L7 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+              </svg>
+            </div>
+          </div>
+        </button>
+      </div>
+
+      <!-- 底部：已有故事板入口 -->
+      <div class="home-footer" id="home-footer" style="display: none;">
+        <button class="btn-view-canvas" id="btn-view-canvas">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <rect x="1" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="10" y="1" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="1" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+            <rect x="10" y="10" width="7" height="7" rx="1.5" stroke="currentColor" stroke-width="1.5"/>
+          </svg>
+          <span>查看故事板</span>
+          <span class="frame-count" id="frame-count">0</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== 语音输入页 ==================== -->
+    <div class="screen screen-voice" id="screen-voice">
+      <header class="voice-header">
+        <button class="btn-back" id="btn-voice-back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <div class="skill-badge" id="voice-skill-badge">
+          <span class="skill-badge-dot"></span>
+          <span class="skill-badge-name"></span>
+        </div>
+        <div class="header-spacer"></div>
+      </header>
+
+      <div class="voice-content">
+        <!-- 状态提示 -->
+        <p class="voice-hint" id="voice-hint">点击麦克风，开始描述你的分镜</p>
+
+        <!-- 麦克风按钮 -->
+        <div class="mic-container" id="mic-container">
+          <!-- 音频可视化环 -->
+          <div class="mic-visualizer" id="mic-visualizer">
+            <div class="mic-bar" style="--i:0"></div>
+            <div class="mic-bar" style="--i:1"></div>
+            <div class="mic-bar" style="--i:2"></div>
+            <div class="mic-bar" style="--i:3"></div>
+            <div class="mic-bar" style="--i:4"></div>
+            <div class="mic-bar" style="--i:5"></div>
+            <div class="mic-bar" style="--i:6"></div>
+            <div class="mic-bar" style="--i:7"></div>
+          </div>
+          <!-- 脉冲圈 -->
+          <div class="mic-pulse mic-pulse-1"></div>
+          <div class="mic-pulse mic-pulse-2"></div>
+          <div class="mic-pulse mic-pulse-3"></div>
+          <!-- 按钮 -->
+          <button class="mic-btn" id="mic-btn">
+            <svg class="mic-icon" width="32" height="32" viewBox="0 0 32 32" fill="none">
+              <rect x="11" y="4" width="10" height="18" rx="5" stroke="currentColor" stroke-width="2"/>
+              <path d="M7 16C7 20.9706 11.0294 25 16 25C20.9706 25 25 20.9706 25 16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="16" y1="25" x2="16" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+              <line x1="12" y1="29" x2="20" y2="29" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg class="stop-icon" width="28" height="28" viewBox="0 0 28 28" fill="none" style="display:none;">
+              <rect x="6" y="6" width="16" height="16" rx="3" fill="currentColor"/>
+            </svg>
+          </button>
+        </div>
+
+        <!-- 转写文字区域 -->
+        <div class="transcript-section" id="transcript-section" style="display: none;">
+          <label class="transcript-label">分镜描述</label>
+          <textarea
+            class="transcript-textarea"
+            id="transcript-textarea"
+            placeholder="语音转写的文字将显示在这里，你也可以手动编辑..."
+            rows="4"
+          ></textarea>
+        </div>
+      </div>
+
+      <!-- 底部操作栏 -->
+      <div class="voice-footer" id="voice-footer" style="display: none;">
+        <button class="btn-regenerate-voice" id="btn-rerecord">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M1 7C1 7 3.5 2 9 2C14.5 2 17 7 17 9C17 13.4183 13.4183 17 9 17C5.5 17 2.5 14.5 1.5 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+            <path d="M1 2V7H6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          重新录音
+        </button>
+        <button class="btn-generate" id="btn-generate">
+          生成分镜
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <path d="M3 9H15M15 9L10 4M15 9L10 14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== 画布页：故事板 ==================== -->
+    <div class="screen screen-canvas" id="screen-canvas">
+      <header class="canvas-header">
+        <button class="btn-back" id="btn-canvas-back">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none">
+            <path d="M15 18L9 12L15 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <h1 class="canvas-title">故事板</h1>
+        <button class="btn-add-frame" id="btn-add-frame">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <line x1="9" y1="3" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="9" x2="15" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+        </button>
+      </header>
+
+      <!-- 分镜列表 -->
+      <div class="storyboard" id="storyboard">
+        <!-- 动态渲染分镜卡片 -->
+      </div>
+
+      <!-- 空状态 -->
+      <div class="empty-state" id="empty-state">
+        <div class="empty-icon">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+            <rect x="8" y="12" width="48" height="40" rx="6" stroke="#333" stroke-width="2" stroke-dasharray="4 4"/>
+            <path d="M26 28L38 36L26 44V28Z" stroke="#444" stroke-width="2" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <h3 class="empty-title">还没有分镜</h3>
+        <p class="empty-desc">点击右上角 + 按钮添加第一个分镜</p>
+        <button class="btn-empty-add" id="btn-empty-add">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+            <line x1="9" y1="3" x2="9" y2="15" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            <line x1="3" y1="9" x2="15" y2="9" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+          </svg>
+          添加分镜
+        </button>
+      </div>
+    </div>
+
+    <!-- ==================== 生成中遮罩 ==================== -->
+    <div class="generating-overlay" id="generating-overlay" style="display: none;">
+      <div class="generating-content">
+        <div class="generating-spinner">
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+          <div class="spinner-ring"></div>
+        </div>
+        <p class="generating-text" id="generating-text">正在生成...</p>
+        <p class="generating-sub">AI 正在为你创造画面</p>
+      </div>
+    </div>
+
+    <!-- ==================== Toast 通知 ==================== -->
+    <div class="toast-container" id="toast-container"></div>
+
+  </div>
+
+  <script src="js/config.js"></script>
+  <script src="js/voice.js"></script>
+  <script src="js/ai.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
